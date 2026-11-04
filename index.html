@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet &amp; People Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@500;600&family=Sarabun:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div>
+        <h1>Pet &amp; People Finder</h1>
+        <p class="sub">หา หมา · คน · แมว · กระต่าย ในรูป ด้วย YOLO11n-seg (Polygon)</p>
+      </div>
+    </div>
+    <div class="pill"><span class="dot" id="dot"></span><span id="status">กำลังโหลดโมเดล…</span></div>
+  </header>
+
+  <ol class="steps">
+    <li><b>1</b>เลือกรูป / ลากมาวาง</li>
+    <li><b>2</b>โมเดลทายในเบราว์เซอร์</li>
+    <li><b>3</b>ดูผล ปรับค่าได้</li>
+  </ol>
+
+  <section class="stage">
+    <div class="plate" id="plate">
+      <canvas id="cv" width="640" height="480"></canvas>
+      <div class="drop" id="drop">
+        <div class="drop-icon" aria-hidden="true">＋</div>
+        <p><b>ลากรูปมาวางตรงนี้</b><br>หรือกดปุ่ม “เลือกรูป” ด้านล่าง · วางด้วย Ctrl+V ก็ได้</p>
+        <p class="tiny">รูปไม่ถูกอัปโหลดไปไหน โมเดลรันในเครื่องคุณเอง</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="btn primary" for="file">เลือกรูป / ถ่ายรูป<input id="file" type="file" accept="image/*"></label>
+      <button id="rerun" class="btn" type="button">ทายใหม่</button>
+      <span class="note">เวลาที่ใช้ <span class="num" id="ms">–</span></span>
+    </div>
+  </section>
+
+  <section class="board">
+    <div class="card">
+      <h2>นับได้</h2>
+      <div class="counts" id="counts"></div>
+    </div>
+
+    <div class="card">
+      <h2>สิ่งที่เจอ</h2>
+      <ul class="dets" id="dets"><li class="empty">ยังไม่มีผล เลือกรูปเพื่อเริ่ม</li></ul>
+    </div>
+
+    <div class="card">
+      <h2>ปรับค่า</h2>
+      <div class="field">
+        <div class="row"><label for="conf">ความมั่นใจขั้นต่ำ (Confidence)</label><span class="num tag" id="confv">0.35</span></div>
+        <input id="conf" type="range" min="0.05" max="0.95" step="0.05" value="0.35">
+      </div>
+      <div class="field">
+        <div class="row"><label for="iou">ตัดกรอบซ้ำ (IoU / NMS)</label><span class="num tag" id="iouv">0.45</span></div>
+        <input id="iou" type="range" min="0.1" max="0.9" step="0.05" value="0.45">
+      </div>
+      <div class="toggles">
+        <label class="chk" for="showMask"><input id="showMask" type="checkbox" checked> Polygon mask</label>
+        <label class="chk" for="showBox"><input id="showBox" type="checkbox" checked> กรอบสี่เหลี่ยม</label>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>เบื้องหลัง</b> โมเดล YOLO11n-seg ที่เทรนจาก dataset ที่ label เอง 4 คลาส แปลงเป็น ONNX แล้วรันด้วย onnxruntime-web (WebAssembly)</p>
+    <p class="flow"><span>ย่อรูป 640×640</span><span>รันโมเดล</span><span>กรอง confidence</span><span>NMS</span><span>สร้าง mask</span><span>วาดผล</span></p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.wasm.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
